@@ -65,7 +65,7 @@ Before running the script, you need to configure the `.env` file. There are some
 - Low fees and high-speed transactions on Solana
 - Full control over funds with decentralized wallet integration
 
-### Conclusion
+## Conclusion
 
 A decentralized trading bot for the Solana blockchain that allows users to copy the trades of successful traders on Solana-based DEXs such as Raydium, Meteora, and Pumpfun. The bot automatically mirrors trades in real-time and helps users grow their portfolio passively. 
 
