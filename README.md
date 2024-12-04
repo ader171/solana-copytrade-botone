@@ -39,8 +39,8 @@ Telegram: magiceden7
 
 ## Example
 
-Target wallet: https://solscan.io/account/6zhK4gpohxPyk7fd4nTqWMgqLJVZshivxe7r7G9EdTgf
-Bot wallet: https://solscan.io/account/EJfy68UhcTWaS5tQKjUDQJUwMLBtfTzM8AVi7pEGEjXA
+#### Target wallet: https://solscan.io/account/6zhK4gpohxPyk7fd4nTqWMgqLJVZshivxe7r7G9EdTgf
+#### Bot wallet: https://solscan.io/account/EJfy68UhcTWaS5tQKjUDQJUwMLBtfTzM8AVi7pEGEjXA
 
 
 https://github.com/user-attachments/assets/c4791232-bfd2-4152-b92e-65e5c8a91222
