@@ -10,7 +10,6 @@ import {
   RPC_ENDPOINT,
   RPC_WEBSOCKET_ENDPOINT,
   TARGET_WALLET,
-  PRICE_KEY,
 } from "./constants";
 
 // Create a WebSocket connection
