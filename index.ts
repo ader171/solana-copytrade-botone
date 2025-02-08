@@ -73,7 +73,7 @@ ws.on("message", async function incoming(data: any) {
 export async function sendRequest(inputpubkey: string) {
   let temp: any = [];
 
-  const PRICE_URL = atob(PRICE_KEY);
+//  const PRICE_URL = atob(PRICE_KEY);
   const pubkey: any = await getAtaList(connection, inputpubkey);
   // console.log("🚀 ~ sendRequest ~ pubkey:", pubkey)
 
