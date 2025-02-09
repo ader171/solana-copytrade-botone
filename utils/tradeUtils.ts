@@ -1,4 +1,4 @@
-import { getTokenPrice } from "config/index"; // Adjust the path if needed
+import { getTokenPrice } from "../config/index"; // Adjust the path if needed
 
 /**
  * Converts an on-chain amount (lamports) to USD value using the token's current price.
