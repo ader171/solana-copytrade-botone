@@ -62,7 +62,7 @@ async function buildTradeTransaction(
   const swapUrl = `https://quote-api.jup.ag/v6/swap`;
   const swapPayload = {
     quoteResponse: bestRoute,
-    userPublicKey: keyPair.publicKey.tobs58(),
+    userPublicKey: keyPair.publicKey.toBase58(),
     wrapUnwrapSOL: true
   };
   
