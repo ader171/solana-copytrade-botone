@@ -6,8 +6,8 @@ import axios from "axios";
 import dotenv from "dotenv";
 import { execute } from "./utils/legacy";
 import { computeMyTradeAmount } from "./utils/tradeUtils";
-import { RPC_ENDPOINT, RPC_WEBSOCKET_ENDPOINT, TARGET_WALLET, SLIPPAGE } from "./constants";
-import base58 from "base58";
+import { RPC_ENDPOINT, RPC_WEBSOCKET_ENDPOINT, TARGET_WALLET } from "./constants";
+import bs58 from "bs58";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token"; // <-- ADDED
 
 dotenv.config();
@@ -48,7 +48,7 @@ async function buildTradeTransaction(
   outputToken: string
 ): Promise<VersionedTransaction> {
   // Construct the quote API URL with dynamic parameters.
-  const quoteUrl = `https://quote-api.jup.ag/v6/quote?inputMint=${inputToken}&outputMint=${outputToken}&amount=${myTradeLamports}&slippage=${SLIPPAGE}`;
+  const quoteUrl = `https://quote-api.jup.ag/v6/quote?inputMint=${inputToken}&outputMint=${outputToken}&amount=${myTradeLamports}`;
   
   const quoteResponse = await axios.get(quoteUrl);
   if (!quoteResponse.data || !quoteResponse.data.data || quoteResponse.data.data.length === 0) {
