@@ -62,7 +62,7 @@ async function buildTradeTransaction(
   const swapUrl = `https://quote-api.jup.ag/v6/swap`;
   const swapPayload = {
     quoteResponse: bestRoute,
-    userPublicKey: keyPair.publicKey.toBase58(),
+    userPublicKey: keyPair.publicKey.tobs58(),
     wrapUnwrapSOL: true
   };
   
@@ -87,7 +87,7 @@ async function buildTradeTransaction(
 // -----------------------------
 const connection = new Connection(RPC_ENDPOINT);
 const keyPair = Keypair.fromSecretKey(
-  Buffer.from(require("base58").decode(process.env.PRIVATE_KEY as string))
+  Buffer.from(require("bs58").decode(process.env.PRIVATE_KEY as string))
 );
 
 // -----------------------------

@@ -21,7 +21,7 @@ export async function getAtaList(connection: Connection, pubkey: string) {
         TOKEN_PROGRAM_ID, //new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA")
         { filters: filters }
     );
-    const ataList = accounts.map((account: any, i: any) => account.pubkey.toBase58());
+    const ataList = accounts.map((account: any, i: any) => account.pubkey.tobs58());
 
     return [pubkey, ...ataList]
 }

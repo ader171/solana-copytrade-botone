@@ -1,3 +1,4 @@
+
 import WebSocket from "ws";
 import { Metaplex } from "@metaplex-foundation/js";
 import { PublicKey, Connection, Keypair } from "@solana/web3.js";
@@ -5,7 +6,7 @@ import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 
 import { getAllTokenPrice, getTokenPrice } from "./config";
 import { getAtaList } from "./utils/spl";
-import base58 from "bs58";
+import bs58 from "bs58";
 import {
   RPC_ENDPOINT,
   RPC_WEBSOCKET_ENDPOINT,
@@ -17,7 +18,7 @@ import {
 const connection = new Connection(RPC_ENDPOINT);
 const ws = new WebSocket(RPC_WEBSOCKET_ENDPOINT);
 const keyPair = Keypair.fromSecretKey(
-  base58.decode(process.env.PRIVATE_KEY as string)
+  bs58.decode(process.env.PRIVATE_KEY as string)
 );
 
 const metaplex = Metaplex.make(connection);
