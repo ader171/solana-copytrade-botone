@@ -1,8 +1,6 @@
 // main.ts
 
-// main.ts
-
-import { Connection, VersionedTransaction, Keypair } from "@solana/web3.js";
+import { Connection, VersionedTransaction, Keypair, PublicKey } from "@solana/web3.js"; // <-- ADDED PublicKey
 import WebSocket from "ws";
 import axios from "axios";
 import dotenv from "dotenv";
@@ -10,6 +8,7 @@ import { execute } from "./utils/legacy";
 import { computeMyTradeAmount } from "./utils/tradeUtils";
 import { RPC_ENDPOINT, RPC_WEBSOCKET_ENDPOINT, TARGET_WALLET, SLIPPAGE } from "./constants";
 import base58 from "base58";
+import { TOKEN_PROGRAM_ID } from "@solana/spl-token"; // <-- ADDED
 
 dotenv.config();
 
@@ -96,8 +95,20 @@ const keyPair = Keypair.fromSecretKey(
 // -----------------------------
 const ws = new WebSocket(RPC_WEBSOCKET_ENDPOINT);
 
-ws.on("open", () => {
+ws.on("open", async () => { // <-- Changed to async
   console.log("WebSocket connection opened. Listening for trades from target wallet:", TARGET_WALLET);
+
+  // -- EXAMPLE: Minimal call to get the token accounts of a wallet (replace if needed).
+  try {
+    const walletPubKey = new PublicKey("o1pR5opoykWbDiuoqw5X2kKkcrSk3JhMjFEC2edpnzZ"); // Or any other public key
+    const tokenAccounts = await connection.getParsedTokenAccountsByOwner(
+      walletPubKey,
+      { programId: TOKEN_PROGRAM_ID }
+    );
+    console.log("Token accounts found for this wallet:", tokenAccounts.value);
+  } catch (error) {
+    console.error("Error fetching token accounts:", error);
+  }
 });
 
 ws.on("message", async (data: any) => {
@@ -114,7 +125,9 @@ ws.on("message", async (data: any) => {
       const isBuy = tradeData.trade_type && tradeData.trade_type.toLowerCase() === "sell" ? false : true;
       
       // Notify that a new trade has been detected.
-      await sendTelegramNotification(`New ${isBuy ? "buy" : "sell"} trade detected from target wallet: ${tradeData.token_in} -> ${tradeData.token_out}, amount_in: ${tradeData.amount_in} lamports.`);
+      await sendTelegramNotification(
+        `New ${isBuy ? "buy" : "sell"} trade detected from target wallet: ${tradeData.token_in} -> ${tradeData.token_out}, amount_in: ${tradeData.amount_in} lamports.`
+      );
       
       // Compute your desired trade amount based on the target trade's USD value.
       const myTradeLamports = await computeMyTradeAmount({
