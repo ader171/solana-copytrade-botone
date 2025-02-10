@@ -1,35 +1,23 @@
 // main.ts
-
+import dotenv from "dotenv";
+dotenv.config(); 
+import { RPC_ENDPOINT, RPC_WEBSOCKET_ENDPOINT, TARGET_WALLET } from "./constants";
 import { Connection, VersionedTransaction, Keypair, PublicKey } from "@solana/web3.js"; // <-- ADDED PublicKey
 import WebSocket from "ws";
 import axios from "axios";
-import dotenv from "dotenv";
 import { execute } from "./utils/legacy";
 import { computeMyTradeAmount } from "./utils/tradeUtils";
-import { RPC_ENDPOINT, RPC_WEBSOCKET_ENDPOINT, TARGET_WALLET } from "./constants";
 import bs58 from "bs58";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token"; // <-- ADDED
+import bot, { sendTelegramNotification } from "./telegramconvo";
 
-dotenv.config();
+console.log("TARGET_WALLET from env:", process.env.TARGET_WALLET);
+
 
 // -----------------------------
 // Telegram Notification Function
 // -----------------------------
-async function sendTelegramNotification(message: string): Promise<void> {
-  const token = process.env.TELEGRAM_TOKEN;
-  const chatId = process.env.TELEGRAM_CHAT_ID;
-  if (!token || !chatId) {
-    console.error("Telegram token or chat ID not defined in .env");
-    return;
-  }
-  try {
-    const url = `https://api.telegram.org/bot${token}/sendMessage`;
-    await axios.post(url, { chat_id: chatId, text: message });
-    console.log("Telegram notification sent:", message);
-  } catch (err) {
-    console.error("Failed to send Telegram notification:", err);
-  }
-}
+bot.sendMessage(process.env.TELEGRAM_CHAT_ID!, "TRADING BOT ONE");
 
 // -----------------------------
 // Build Trade Transaction Using Jupiter Aggregator API
