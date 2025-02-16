@@ -1,0 +1,332 @@
+TARGET_WALLET from env: o1pR5opoykWbDiuoqw5X2kKkcrSk3JhMjFEC2edpnzZ
+Listening for trade data on target wallet: o1pR5opoykWbDiuoqw5X2kKkcrSk3JhMjFEC2edpnzZ...
+(node:47772) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+WebSocket connection opened. Listening for trades from target wallet: o1pR5opoykWbDiuoqw5X2kKkcrSk3JhMjFEC2edpnzZ
+Token accounts found for this wallet: [
+  {
+    account: {
+      data: [Object],
+      executable: false,
+      lamports: 2039280,
+      owner: [PublicKey [PublicKey(TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA)]],
+      rentEpoch: 18446744073709552000,
+      space: 165
+    },
+    pubkey: PublicKey [PublicKey(5CdS9wQsYigN7AhcqKixEuzSYrZYKHnqJ6ad7RfERVbS)] {
+      _bn: <BN: 3e6955125e323e63458a2b34eba2bb9cf907a9d47cde8d0d26b2113fa8fd9a0d>
+    }
+  },
+  {
+    account: {
+      data: [Object],
+      executable: false,
+      lamports: 2039280,
+      owner: [PublicKey [PublicKey(TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA)]],
+      rentEpoch: 18446744073709552000,
+      space: 165
+    },
+    pubkey: PublicKey [PublicKey(F1C3X8ySUq2oFTQeak7PkG7fiG8GqFEga29kmMGsUZDK)] {
+      _bn: <BN: d0101a947b0734b5dea9094f94fb415a5f02fb92e177d061b9f93c63a8fdfd02>
+    }
+  },
+  {
+    account: {
+      data: [Object],
+      executable: false,
+      lamports: 2039280,
+      owner: [PublicKey [PublicKey(TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA)]],
+      rentEpoch: 18446744073709552000,
+      space: 165
+    },
+    pubkey: PublicKey [PublicKey(DZ1hBMsCv5fmgUt6jMxwnrqVkHPYvso5HoW3E81kuPGW)] {
+      _bn: <BN: ba7f9cbeaa66701222908793843531ee6e03f3b280b1aeb3979bd3fbc9e4c6ab>
+    }
+  },
+  {
+    account: {
+      data: [Object],
+      executable: false,
+      lamports: 2039280,
+      owner: [PublicKey [PublicKey(TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA)]],
+      rentEpoch: 18446744073709552000,
+      space: 165
+    },
+    pubkey: PublicKey [PublicKey(H661C1U6noqknKykKMUC7fLRF8MQFVtv36uziDZCRVDh)] {
+      _bn: <BN: ef088d55722809454f00dc8e23653aa7019f443130cdd24dad663f305f5578c0>
+    }
+  },
+  {
+    account: {
+      data: [Object],
+      executable: false,
+      lamports: 2039280,
+      owner: [PublicKey [PublicKey(TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA)]],
+      rentEpoch: 18446744073709552000,
+      space: 165
+    },
+    pubkey: PublicKey [PublicKey(Ahbu23HaWUtzgVeNi7VJtVSSZ4sz2NPLrpxYGrgCqcEr)] {
+      _bn: <BN: 901fdf69af353477497f389c4766fe23a28b6a238ec018915f99b70398caca5f>
+    }
+  },
+  {
+    account: {
+      data: [Object],
+      executable: false,
+      lamports: 2039280,
+      owner: [PublicKey [PublicKey(TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA)]],
+      rentEpoch: 18446744073709552000,
+      space: 165
+    },
+    pubkey: PublicKey [PublicKey(EYHt8bpGvkWJbYSVuQh3spMfbk5Kh93xq5Y7M5nfxNmi)] {
+      _bn: <BN: c92c05eed5346e76d63d100bcb0f26e404cc24c9d174e7d41fa3351ef479312d>
+    }
+  },
+  {
+    account: {
+      data: [Object],
+      executable: false,
+      lamports: 2039280,
+      owner: [PublicKey [PublicKey(TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA)]],
+      rentEpoch: 18446744073709552000,
+      space: 165
+    },
+    pubkey: PublicKey [PublicKey(AzgoHZ3AUiyt2aiceypdL4AyxM4vgo6VQHWztUNkjcYs)] {
+      _bn: <BN: 948049c9044e049710600601f2e4af59c0e2cb1a7493196f1d75d3ab7b2bb8c4>
+    }
+  },
+  {
+    account: {
+      data: [Object],
+      executable: false,
+      lamports: 2039280,
+      owner: [PublicKey [PublicKey(TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA)]],
+      rentEpoch: 18446744073709552000,
+      space: 165
+    },
+    pubkey: PublicKey [PublicKey(vkiMbXxd8EcWt5zXzLPWd6ZhhEqPcjVJJpC8uQzXaoB)] {
+      _bn: <BN: dc53597e4cc1d86f89264af0f6082ae42866c686780abc2a9fabd50b66c723a>
+    }
+  },
+  {
+    account: {
+      data: [Object],
+      executable: false,
+      lamports: 2039280,
+      owner: [PublicKey [PublicKey(TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA)]],
+      rentEpoch: 18446744073709552000,
+      space: 165
+    },
+    pubkey: PublicKey [PublicKey(CmrZE4eZHt7tq2Yt4i3J4QteVbLyTXwqkXyXsrHBFdD3)] {
+      _bn: <BN: aeee24fd7dab687086b17ab000a3d87f84e3d198454066dc827b06b7d39c03da>
+    }
+  },
+  {
+    account: {
+      data: [Object],
+      executable: false,
+      lamports: 2039280,
+      owner: [PublicKey [PublicKey(TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA)]],
+      rentEpoch: 18446744073709552000,
+      space: 165
+    },
+    pubkey: PublicKey [PublicKey(HxpSmbr1anz35TWew5DMa58eGhJcXKCsxWw3hoEDx6Y4)] {
+      _bn: <BN: fc0794ac446d7bec09a760195b8dadc9aa21080cfb05c41ee8b04b44b3b10ab5>
+    }
+  },
+  {
+    account: {
+      data: [Object],
+      executable: false,
+      lamports: 2039280,
+      owner: [PublicKey [PublicKey(TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA)]],
+      rentEpoch: 18446744073709552000,
+      space: 165
+    },
+    pubkey: PublicKey [PublicKey(DdJDntughrnn1qFLd5ywEPPpQud6K87yJ522kwPrfw7z)] {
+      _bn: <BN: bb989fa238a34d379193958654c3ab6b87a7d6e95043541293c03c5d3612aced>
+    }
+  },
+  {
+    account: {
+      data: [Object],
+      executable: false,
+      lamports: 2039280,
+      owner: [PublicKey [PublicKey(TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA)]],
+      rentEpoch: 18446744073709552000,
+      space: 165
+    },
+    pubkey: PublicKey [PublicKey(Fnrz5ah1Kb4doLiCc4nRXcFhK54vLLjShGjYF4ex7gZT)] {
+      _bn: <BN: dbc345463268ab52452297f4e4a0c212ad215c91e9529c61c644b5a9dabc0816>
+    }
+  },
+  {
+    account: {
+      data: [Object],
+      executable: false,
+      lamports: 2039280,
+      owner: [PublicKey [PublicKey(TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA)]],
+      rentEpoch: 18446744073709552000,
+      space: 165
+    },
+    pubkey: PublicKey [PublicKey(3C2PBDJzqkkVdAW5JMQEneFnsncu2tF6vJf82L6TbzNY)] {
+      _bn: <BN: 208a5366124c14855772d950244a2a9d537bf4ad16ffc85df4c3c70ecaea4b35>
+    }
+  },
+  {
+    account: {
+      data: [Object],
+      executable: false,
+      lamports: 2039280,
+      owner: [PublicKey [PublicKey(TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA)]],
+      rentEpoch: 18446744073709552000,
+      space: 165
+    },
+    pubkey: PublicKey [PublicKey(FXS3ZREazJcP32gBuCzwv3uZSnAHY5wrQsA5gCZHQHZz)] {
+      _bn: <BN: d7cf5bd4e60ac0ba64856aacbfc36259784b08a78d6b08466cef168a68103491>
+    }
+  },
+  {
+    account: {
+      data: [Object],
+      executable: false,
+      lamports: 2039280,
+      owner: [PublicKey [PublicKey(TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA)]],
+      rentEpoch: 18446744073709552000,
+      space: 165
+    },
+    pubkey: PublicKey [PublicKey(BTSCaGoDDKPuSqCYnjkkeJCQKLMsQ5utQb6yyQCGvNak)] {
+      _bn: <BN: 9b5a76a90a3a4c07fbc44dc832252f95d961526f5cc283cfb8eda122ff423d71>
+    }
+  },
+  {
+    account: {
+      data: [Object],
+      executable: false,
+      lamports: 2039280,
+      owner: [PublicKey [PublicKey(TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA)]],
+      rentEpoch: 18446744073709552000,
+      space: 165
+    },
+    pubkey: PublicKey [PublicKey(GEkYuXfL6vpiM89varSnwcQjuXBHtJVWmKqHSZdxEudR)] {
+      _bn: <BN: e26518bf157766262e3faa7864ee2058fd1ae50e400e2c0caeb019575084f708>
+    }
+  },
+  {
+    account: {
+      data: [Object],
+      executable: false,
+      lamports: 2039280,
+      owner: [PublicKey [PublicKey(TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA)]],
+      rentEpoch: 18446744073709552000,
+      space: 165
+    },
+    pubkey: PublicKey [PublicKey(4wE2uUkF7wdbgPwageHCRCnT2qE1D2XzM56EjhsfhNMg)] {
+      _bn: <BN: 3a772926e6942a4a005d1c3650867a146164f0a45c4af20b1530051c31f41a83>
+    }
+  },
+  {
+    account: {
+      data: [Object],
+      executable: false,
+      lamports: 2039280,
+      owner: [PublicKey [PublicKey(TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA)]],
+      rentEpoch: 18446744073709552000,
+      space: 165
+    },
+    pubkey: PublicKey [PublicKey(9v8VbJ3Kc36uTmD5L8LL32RWrYR6WkrR6Eam9vKES5B9)] {
+      _bn: <BN: 8479c0275e94e43d657bc42b4e8e8ae8de959a8040aba973dab1b33097025514>
+    }
+  },
+  {
+    account: {
+      data: [Object],
+      executable: false,
+      lamports: 2039280,
+      owner: [PublicKey [PublicKey(TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA)]],
+      rentEpoch: 18446744073709552000,
+      space: 165
+    },
+    pubkey: PublicKey [PublicKey(3nE8aReB7t9jHibrAADrkummhD4WY2CHi8XGjJPAJP4r)] {
+      _bn: <BN: 294d5b6b5b6b24c37568abc4c5a144b5f94f2ea43b31dcfcad2fd9dff7e3322f>
+    }
+  },
+  {
+    account: {
+      data: [Object],
+      executable: false,
+      lamports: 2039280,
+      owner: [PublicKey [PublicKey(TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA)]],
+      rentEpoch: 18446744073709552000,
+      space: 165
+    },
+    pubkey: PublicKey [PublicKey(5EaUKk77VrVY3CTkcs3BU3Nm6Fj1nt9fhrNAzJ5sTgmx)] {
+      _bn: <BN: 3ee924e4050c6e50c34f7643b953269c1c96821f435522e1b854362f9c6f861b>
+    }
+  },
+  {
+    account: {
+      data: [Object],
+      executable: false,
+      lamports: 2039280,
+      owner: [PublicKey [PublicKey(TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA)]],
+      rentEpoch: 18446744073709552000,
+      space: 165
+    },
+    pubkey: PublicKey [PublicKey(21uSw6E9QWDAHF2fMQN4SkwgBNaNESjMSpwdjpt8dD65)] {
+      _bn: <BN: f16fd337a70268bba75e9dff2b1f0378d4970497d0402f79ef8b1f23750d986>
+    }
+  },
+  {
+    account: {
+      data: [Object],
+      executable: false,
+      lamports: 2039280,
+      owner: [PublicKey [PublicKey(TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA)]],
+      rentEpoch: 18446744073709552000,
+      space: 165
+    },
+    pubkey: PublicKey [PublicKey(Fya1QGfJQDMPVhdExFUiC6qoovku4jPiPiz6yMs1brKK)] {
+      _bn: <BN: de81769bfb1643fa6f68a2b682e81cb7ece048d6b1c47a26e4ce9c232b08d69a>
+    }
+  },
+  {
+    account: {
+      data: [Object],
+      executable: false,
+      lamports: 2039280,
+      owner: [PublicKey [PublicKey(TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA)]],
+      rentEpoch: 18446744073709552000,
+      space: 165
+    },
+    pubkey: PublicKey [PublicKey(4VjRwuE1tsrbAUgdQEe62nq6vTdedFKqKM5KpX7JJvp4)] {
+      _bn: <BN: 33ef4c9fe7f8b9e687b54e7766f5775dad7ca39f325034f93d5fddd7ecc58295>
+    }
+  },
+  {
+    account: {
+      data: [Object],
+      executable: false,
+      lamports: 2039280,
+      owner: [PublicKey [PublicKey(TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA)]],
+      rentEpoch: 18446744073709552000,
+      space: 165
+    },
+    pubkey: PublicKey [PublicKey(24TBWWwC4YUSP9pL3BpUKuBjBR4TjZLAHZKr53oSZaUR)] {
+      _bn: <BN: fbe08530ab1edc80d8babd3d3133f15293693b94221e605a31419975d2c51aa>
+    }
+  },
+  {
+    account: {
+      data: [Object],
+      executable: false,
+      lamports: 2039280,
+      owner: [PublicKey [PublicKey(TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA)]],
+      rentEpoch: 18446744073709552000,
+      space: 165
+    },
+    pubkey: PublicKey [PublicKey(BYXE4kkULfd2Xvkkv84GH2ypJC8Y85K4cbfzLp9gDHLF)] {
+      _bn: <BN: 9ca80cd68761cb1061f046bb3902e583f7adfb6c39a83d58c11baa33cdfe6d2c>
+    }
+  }
+]
