@@ -1,6 +1,8 @@
 // src/utils/swapUtils.ts
+import { Connection } from "@solana/web3.js";
 import { PublicKey } from "@solana/web3.js";
 import Jupiter from "@jup-ag/api";
+const userWallet = process.env.YOUR_WALLET_ADDRESS!;
 
 export async function executeJupiterSwap(
   inputMint: string,
@@ -23,7 +25,7 @@ export async function executeJupiterSwap(
   
   const { swapTransaction } = await jupiter.exchange({
     route: routes.bestRoute,
-    userPublicKey: new PublicKey("YOUR_WALLET_ADDRESS"),
+    userPublicKey: new PublicKey("userWallet"),
     wrapUnwrapSOL: true
   });
 

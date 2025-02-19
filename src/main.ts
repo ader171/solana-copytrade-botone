@@ -2,7 +2,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 import { Jupiter, RouteInfo } from "@jup-ag/api";
-import { RPC_ENDPOINT, TARGET_WALLET } from "./constants";
+import { RPC_ENDPOINT, TARGET_WALLET } from "./constants/index";
 import { Connection, VersionedTransaction, Keypair, PublicKey, Commitment } from "@solana/web3.js";
 import WebSocket from "ws";
 import axios from "axios";

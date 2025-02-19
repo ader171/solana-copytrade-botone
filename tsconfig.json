@@ -1,22 +1,20 @@
-
 {
   "compilerOptions": {
-    /* Essential Changes */
-    "target": "ES2020",                 // Changed from es2016
+    "target": "ES2020",
     "module": "commonjs",
-    "moduleResolution": "node",         // Added
-    "outDir": "./dist",                 // Added
-    "rootDir": "./src",                 // Added
-    "types": ["jest", "node"],          // Added
-    
-    /* Keep These As-Is */
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
-
-    /* Remove All Commented Options */
+    "baseUrl": "./src",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "paths": {
+      "@utils/*": ["utils/*"],
+      "@constants/*": ["../constants/*"],
+      "@config/*": ["../config/*"]
+    },
+    "types": ["jest", "node"]
   },
-  "include": ["src/**/*"],              // Added
-  "exclude": ["node_modules"]           // Added
+  "include": ["src/**/*", "constants/**/*", "config/**/*"],
+  "exclude": ["node_modules"]
 }
