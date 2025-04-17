@@ -1,151 +1,98 @@
-// main.ts
 import dotenv from "dotenv";
 dotenv.config();
-import { Jupiter, RouteInfo } from "@jup-ag/api";
-import { RPC_ENDPOINT, TARGET_WALLET } from "./constants/index";
-import { Connection, VersionedTransaction, Keypair, PublicKey, Commitment } from "@solana/web3.js";
-import WebSocket from "ws";
-import axios from "axios";
+import {
+  Connection,
+  ParsedTransactionWithMeta,
+  PublicKey,
+  VersionedTransaction,
+  Keypair,
+  Finality,
+  ParsedInstruction
+} from "@solana/web3.js";
+import { decodeSwapInstruction } from "./utils/decodeSwapInstruction";
 import { computeMyTradeAmount } from "./utils/tradeUtils";
-import bs58 from "bs58";
 import { sendTelegramNotification } from "./telegramconvo";
+import { RPC_ENDPOINT, TARGET_WALLET } from "./constants";
+import bs58 from "bs58";
 
-// -----------------------------
-// Initialize Core Components
-// -----------------------------
-const connection = new Connection(RPC_ENDPOINT, {
-  commitment: "confirmed" as Commitment,
-  wsEndpoint: process.env.RPC_WEBSOCKET_ENDPOINT
-});
+const connection = new Connection(RPC_ENDPOINT, "confirmed" as Finality);
+const keyPair = Keypair.fromSecretKey(bs58.decode(process.env.PRIVATE_KEY!));
+const seenSignatures = new Set<string>();
 
-const keyPair = Keypair.fromSecretKey(
-  bs58.decode(process.env.PRIVATE_KEY as string)
-);
+async function executeJupiterSwap(inputToken: string, outputToken: string, amountLamports: number): Promise<string> {
+  const quoteUrl = `https://quote-api.jup.ag/v6/quote?inputMint=${inputToken}&outputMint=${outputToken}&amount=${amountLamports}&slippageBps=100`;
+  const quoteResp = await fetch(quoteUrl);
+  const quoteData = await quoteResp.json();
+  const route = quoteData.data?.[0];
+  if (!route) throw new Error("No route found");
 
-const jupiter = new Jupiter({
-  connection,
-  cluster: "mainnet-beta",
-});
-
-// -----------------------------
-// Enhanced Jupiter Swap Execution
-// -----------------------------
-async function executeJupiterSwap(
-  inputToken: string,
-  outputToken: string,
-  amountLamports: number
-): Promise<string> {
-  try {
-    // 1. Get best route
-    const { bestRoute } = await jupiter.computeRoutes({
-      inputMint: new PublicKey(inputToken),
-      outputMint: new PublicKey(outputToken),
-      amount: amountLamports,
-      slippageBps: 100, // 1% slippage
-      onlyDirectRoutes: false
-    });
-
-    if (!bestRoute) throw new Error("No viable swap route found");
-
-    // 2. Prepare swap transaction
-    const { swapTransaction } = await jupiter.exchange({
-      route: bestRoute,
-      userPublicKey: keyPair.publicKey,
+  const swapResp = await fetch("https://quote-api.jup.ag/v6/swap", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      quoteResponse: route,
+      userPublicKey: keyPair.publicKey.toBase58(),
       wrapUnwrapSOL: true
-    });
-
-    // 3. Sign and execute
-    const signedTx = await swapTransaction.sign([keyPair]);
-    const rawTransaction = signedTx.serialize();
-    const txid = await connection.sendRawTransaction(rawTransaction);
-    
-    // 4. Confirm transaction
-    await connection.confirmTransaction(txid);
-    return txid;
-
-  } catch (error) {
-    console.error("Swap execution failed:", error);
-    throw error;
-  }
+    })
+  });
+  const swapData = await swapResp.json();
+  const txBuf = Buffer.from(swapData.swapTransaction, "base64");
+  const tx = VersionedTransaction.deserialize(txBuf);
+  tx.sign([keyPair]);
+  const sig = await connection.sendTransaction(tx);
+  await connection.confirmTransaction(sig);
+  return sig;
 }
 
-// -----------------------------
-// WebSocket Trade Detection
-// -----------------------------
-const ws = new WebSocket(process.env.RPC_WEBSOCKET_ENDPOINT!);
+async function pollTransactions() {
+  console.log("🔁 Polling for target wallet transactions...");
 
-ws.on("open", () => {
-  console.log("Monitoring wallet:", TARGET_WALLET);
-  ws.send(JSON.stringify({
-    jsonrpc: "2.0",
-    id: 1,
-    method: "accountSubscribe",
-    params: [
-      TARGET_WALLET,
-      { encoding: "jsonParsed", commitment: "confirmed" }
-    ]
-  }));
-});
-
-ws.on("message", async (data: WebSocket.Data) => {
   try {
-    const rawData = data.toString();
-    const parsed = JSON.parse(rawData);
-    
-    // 1. Filter for successful transactions
-    const txData = parsed?.params?.result?.value;
-    if (!txData || txData.err) return;
+    const sigs = await connection.getSignaturesForAddress(new PublicKey(TARGET_WALLET), { limit: 10 });
 
-    // 2. Detect Jupiter swaps
-    const isJupiterSwap = txData.transaction.message.instructions
-      .some((ix: any) => ix.programId === 'JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4');
+    for (const sig of sigs) {
+      if (seenSignatures.has(sig.signature)) continue;
+      seenSignatures.add(sig.signature);
 
-    if (!isJupiterSwap) return;
+      const tx = await connection.getParsedTransaction(sig.signature, {
+        maxSupportedTransactionVersion: 0
+      });
 
-    // 3. Extract swap details
-    const preTokenBalances = txData.meta.preTokenBalances;
-    const postTokenBalances = txData.meta.postTokenBalances;
+      if (!tx || !tx.meta || tx.meta.err) continue;
 
-    const inputBalance = preTokenBalances.find((b: any) => 
-      b.owner === TARGET_WALLET && b.mint !== b.uiTokenAmount.tokenSymbol
-    );
-    const outputBalance = postTokenBalances.find((b: any) =>
-      b.owner === TARGET_WALLET && b.mint !== inputBalance?.mint
-    );
+      console.log("Transaction Instructions:", tx.transaction.message.instructions);
 
-    if (!inputBalance || !outputBalance) {
-      throw new Error("Failed to detect swap tokens");
+      const decoded = await decodeSwapInstruction(tx as ParsedTransactionWithMeta);
+
+      if (!decoded) continue;
+
+      const { inputToken, outputToken, amountIn } = decoded;
+      const amountInOrDefault = amountIn ?? 1e9;
+
+      const myAmountLamports = await computeMyTradeAmount({
+        amount_in: amountInOrDefault,
+        token_in: inputToken
+      });
+
+      const txSig = await executeJupiterSwap(inputToken, outputToken, myAmountLamports);
+
+      await sendTelegramNotification(
+        `✅ Copied trade executed: https://solscan.io/tx/${txSig}\n` +
+        `Swapped ${inputToken} → ${outputToken} (~$10 USD equivalent)`
+      );
     }
-
-    // 4. Calculate copy trade amount
-    const myAmount = await computeMyTradeAmount({
-      amount_in: inputBalance.uiTokenAmount.uiAmount,
-      token_in: inputBalance.mint
-    });
-
-    // 5. Execute copy trade
-    const txSig = await executeJupiterSwap(
-      inputBalance.mint,
-      outputBalance.mint,
-      myAmount
-    );
-
-    await sendTelegramNotification(
-      `✅ Copied trade executed: https://solscan.io/tx/${txSig}\n` +
-      `Swapped ${inputBalance.uiTokenAmount.uiAmount} ${inputBalance.uiTokenAmount.tokenSymbol} ` +
-      `for ${outputBalance.uiTokenAmount.uiAmount} ${outputBalance.uiTokenAmount.tokenSymbol}`
-    );
-
-  } catch (error) {
-    console.error("Trade copy failed:", error);
-    await sendTelegramNotification(`❌ Trade failed: ${error.message}`);
+  } catch (err) {
+    console.error("Polling error:", err);
+    await sendTelegramNotification(`❌ Polling error: ${err instanceof Error ? err.message : err}`);
   }
-});
 
-// -----------------------------
-// Startup Validation
-// -----------------------------
+  setTimeout(pollTransactions, 2000);
+}
+
 console.log("🚀 Bot started with configuration:");
 console.log("- RPC Endpoint:", RPC_ENDPOINT);
 console.log("- Target Wallet:", TARGET_WALLET);
 console.log("- Trading Wallet:", keyPair.publicKey.toBase58());
+
+pollTransactions();
+

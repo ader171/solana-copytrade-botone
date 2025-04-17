@@ -1,10 +1,13 @@
 // jest.config.js
 module.exports = {
-  preset: "ts-jest",
-  testEnvironment: "node",
-  roots: ["<rootDir>/src/tests"], // Points to your tests
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+  roots: ['<rootDir>/src'],
+  modulePaths: ['<rootDir>/src'],
   moduleNameMapper: {
-    "^@utils/(.*)$": "<rootDir>/src/utils/$1", // Maps your aliases
-    "^@constants/(.*)$": "<rootDir>/constants/$1",
+    '^@tests/(.*)$': '<rootDir>/src/tests/$1',
+    '^@utils/(.*)$': '<rootDir>/src/utils/$1',
+    '^@constants/(.*)$': '<rootDir>/src/constants/$1',
+    '^@config/(.*)$': '<rootDir>/src/config/$1'
   },
 };

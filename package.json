@@ -9,7 +9,8 @@
     "test": "jest --config jest.config.js"
   },
   "dependencies": {
-    "@jup-ag/api": "^6.0.39",
+    "@jup-ag/api": "6.0.0",
+    "@jup-ag/instruction-parser": "^6.0.7",
     "@solana/spl-token": "^0.4.8",
     "@solana/web3.js": "^1.98.0",
     "axios": "^1.7.9",
