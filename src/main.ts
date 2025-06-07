@@ -1,98 +1,82 @@
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
 dotenv.config();
-import {
-  Connection,
-  ParsedTransactionWithMeta,
-  PublicKey,
-  VersionedTransaction,
-  Keypair,
-  Finality,
-  ParsedInstruction
-} from "@solana/web3.js";
-import { decodeSwapInstruction } from "./utils/decodeSwapInstruction";
-import { computeMyTradeAmount } from "./utils/tradeUtils";
-import { sendTelegramNotification } from "./telegramconvo";
-import { RPC_ENDPOINT, TARGET_WALLET } from "./constants";
-import bs58 from "bs58";
 
-const connection = new Connection(RPC_ENDPOINT, "confirmed" as Finality);
-const keyPair = Keypair.fromSecretKey(bs58.decode(process.env.PRIVATE_KEY!));
-const seenSignatures = new Set<string>();
+import { Connection, PublicKey, ParsedTransactionWithMeta, Finality } from '@solana/web3.js';
+import { executeTradeByProject, traderClient } from './execution/traderExecutor';
+// CHANGE HERE: Use raw trade parser
+import { parseWithDexParser } from './utils/parseWithDexParser';
+import { getFinalSwap } from 'solana-dex-parser/src/utils'; // <-- ADD THIS
+import { detectDexProject } from './utils/detectDexProject';
+import { sendTelegramNotification } from './telegramconvo';
 
-async function executeJupiterSwap(inputToken: string, outputToken: string, amountLamports: number): Promise<string> {
-  const quoteUrl = `https://quote-api.jup.ag/v6/quote?inputMint=${inputToken}&outputMint=${outputToken}&amount=${amountLamports}&slippageBps=100`;
-  const quoteResp = await fetch(quoteUrl);
-  const quoteData = await quoteResp.json();
-  const route = quoteData.data?.[0];
-  if (!route) throw new Error("No route found");
+const RPC_ENDPOINT = process.env.RPC_ENDPOINT!;
+const TARGET_WALLET = process.env.TARGET_WALLET!;
+const POLL_INTERVAL = 4000;
 
-  const swapResp = await fetch("https://quote-api.jup.ag/v6/swap", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      quoteResponse: route,
-      userPublicKey: keyPair.publicKey.toBase58(),
-      wrapUnwrapSOL: true
-    })
-  });
-  const swapData = await swapResp.json();
-  const txBuf = Buffer.from(swapData.swapTransaction, "base64");
-  const tx = VersionedTransaction.deserialize(txBuf);
-  tx.sign([keyPair]);
-  const sig = await connection.sendTransaction(tx);
-  await connection.confirmTransaction(sig);
-  return sig;
-}
+const seen = new Set<string>();
+const connection = new Connection(RPC_ENDPOINT, {
+  commitment: 'confirmed',
+  wsEndpoint: RPC_ENDPOINT.replace('https', 'wss'),
+});
 
 async function pollTransactions() {
-  console.log("🔁 Polling for target wallet transactions...");
-
   try {
-    const sigs = await connection.getSignaturesForAddress(new PublicKey(TARGET_WALLET), { limit: 10 });
+    const signatures = await connection.getSignaturesForAddress(
+      new PublicKey(TARGET_WALLET),
+      { limit: 5 },
+      'confirmed'
+    );
 
-    for (const sig of sigs) {
-      if (seenSignatures.has(sig.signature)) continue;
-      seenSignatures.add(sig.signature);
+    for (const sigInfo of signatures) {
+      const signature = sigInfo.signature;
+      if (seen.has(signature)) continue;
 
-      const tx = await connection.getParsedTransaction(sig.signature, {
-        maxSupportedTransactionVersion: 0
+      seen.add(signature);
+
+      const tx = await connection.getParsedTransaction(signature, {
+        maxSupportedTransactionVersion: 0,
+        commitment: 'confirmed' as Finality,
       });
 
-      if (!tx || !tx.meta || tx.meta.err) continue;
+      if (!tx || !tx.transaction.message || !tx.meta) continue;
 
-      console.log("Transaction Instructions:", tx.transaction.message.instructions);
+      // 🔄 REPLACED extractTradeFromParsed with final swap logic
+      const trades = parseWithDexParser(tx as ParsedTransactionWithMeta);
+      const trade = getFinalSwap(trades);
+      if (!trade) continue;
 
-      const decoded = await decodeSwapInstruction(tx as ParsedTransactionWithMeta);
+      const { inputToken: inToken, outputToken: outToken, amm: project, bondingCurve } = trade;
 
-      if (!decoded) continue;
+      if (!inToken || !outToken || !project) {
+        console.warn(`⚠️ Insufficient trade data: ${signature}`);
+        continue;
+      }
 
-      const { inputToken, outputToken, amountIn } = decoded;
-      const amountInOrDefault = amountIn ?? 1e9;
+      if (!bondingCurve && project === 'P_PUMP') {
+        console.warn(`⚠️ Missing bondingCurve for Pump.fun trade: ${signature}`);
+        continue;
+      }
 
-      const myAmountLamports = await computeMyTradeAmount({
-        amount_in: amountInOrDefault,
-        token_in: inputToken
-      });
-
-      const txSig = await executeJupiterSwap(inputToken, outputToken, myAmountLamports);
-
-      await sendTelegramNotification(
-        `✅ Copied trade executed: https://solscan.io/tx/${txSig}\n` +
-        `Swapped ${inputToken} → ${outputToken} (~$10 USD equivalent)`
-      );
+      try {
+        const copiedSig = await executeTradeByProject(project, inToken, outToken, 20, bondingCurve);
+        if (copiedSig && copiedSig !== 'unknown') {
+          console.log(`✅ Copied trade: ${copiedSig}`);
+          await sendTelegramNotification(
+            `📈 Copied trade from ${TARGET_WALLET} on ${project}:\nToken: ${outToken}\nTx: https://solscan.io/tx/${copiedSig}`
+          );
+        } else {
+          console.warn(`⚠️ Trade executed, but no signature returned.`);
+        }
+      } catch (err) {
+        console.error('❌ Trade execution error:', err);
+        await sendTelegramNotification(`❌ Failed to execute trade for ${outToken} on ${project}`);
+      }
     }
   } catch (err) {
-    console.error("Polling error:", err);
-    await sendTelegramNotification(`❌ Polling error: ${err instanceof Error ? err.message : err}`);
+    console.error('❌ Error in polling transactions:', err);
   }
-
-  setTimeout(pollTransactions, 2000);
 }
 
-console.log("🚀 Bot started with configuration:");
-console.log("- RPC Endpoint:", RPC_ENDPOINT);
-console.log("- Target Wallet:", TARGET_WALLET);
-console.log("- Trading Wallet:", keyPair.publicKey.toBase58());
-
-pollTransactions();
+// Loop
+setInterval(pollTransactions, POLL_INTERVAL);
 
