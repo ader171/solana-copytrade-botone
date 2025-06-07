@@ -1,0 +1,17 @@
+// src/utils/parseWithDexParser.ts
+
+import { DexParser, TradeInfo } from 'solana-dex-parser';
+import { ParsedTransactionWithMeta } from '@solana/web3.js';
+
+/**
+ * Parses a Solana transaction using solana-dex-parser to extract trade info.
+ * @param tx A parsed Solana transaction (ParsedTransactionWithMeta).
+ * @returns The first trade found in the transaction, or null.
+ */
+export function extractTradeFromParsed(tx: ParsedTransactionWithMeta): TradeInfo | null {
+  const parser = new DexParser();
+  const trades = parser.parseTrades(tx);
+  return trades.length > 0 ? trades[0] : null;
+}
+
+
